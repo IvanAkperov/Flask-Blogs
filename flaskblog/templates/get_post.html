@@ -1,0 +1,58 @@
+{% extends "base.html"%}
+
+{% block body %}
+    <div class="container">
+        <div class="post-block">
+            <article class="media content-section" style="background-color: #f8f9fa; padding: 20px;">
+                <div class="media-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="image-container">
+                                <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + post.author.image_file) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="text-container">
+                                <div class="article-metadata">
+                                    <a class="mr-2" href="{{ url_for('users.get_user_posts', username=post.author.user) }}">{{ post.author.user }}</a>
+                                    <small class="text-muted">{{ post.date_posted.strftime("%Y-%m-%d %H:%M") }}</small>
+                                    {% if post.author == current_user %}
+                                        <div>
+                                            <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+                                            <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle='modal' data-bs-target='#deleteModal'>Delete</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <h2 class="article-title">{{ post.title }}</h2>
+                                <p class="article-content">{{ post.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirm deletion</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="text-danger">
+                <b>Are you sure you want to delete this post?</b>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form action="{{ url_for('posts.delete_post', post_id=post.id) }}">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% if query %}
+    <h3>Search results for {{ query }}: ({{ message | length }})</h3>
+    {% for msg in message %}
+        <br><div class="text-container">
+            <div class="article-metadata">
+                <h2>Author: {{msg.author.user}}</h2>
+                <h2 class="article-title">Title: {{ msg.title }}</h2>
+                <p class="article-content">Content: {{ msg.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}

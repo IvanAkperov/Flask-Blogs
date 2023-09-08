@@ -1,0 +1,54 @@
+{% extends "base.html"%}
+
+{% block body %}
+    <div class="container">
+        {% for post in posts.items %}
+            <div class="post-block">
+                <article class="media content-section" style="background-color: #f8f9fa; padding: 20px;">
+                    <div class="media-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="image-container">
+                                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='img/' + post.author.image_file) }}">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="text-container">
+                                    <div class="article-metadata">
+                                        <a class="mr-2" href="{{ url_for('users.get_user_posts', username=post.author.user) }}">{{ post.author.user }}</a>
+                                        <small class="text-muted">{{ post.date_posted.strftime("%Y-%m-%d %H:%M") }}</small>
+                                    </div>
+                                    <h2><a class="article-title" href="{{url_for('posts.get_post', post_id=post.id)}}">{{ post.title }}</a></h2>
+                                    <p class="article-content">{{ post.content }}</p>
+                                    {% for comment in post.comments %}
+                                        <div class="comment-block">
+                                            <div class="comment-content" style="text-align: right">
+                                                <p>{{ comment.content }} - (c) {{comment.author.user}}</p>
+                                                <small class="text-muted">{{ comment.date_posted.strftime("%Y-%m-%d %H:%M") }}</small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <form method="POST" class="submit-btn" action="{{ url_for('posts.submit_comment', post_id=post.id) }}">
+                                        <textarea name="content" rows="1"></textarea>
+                                        <button type="submit">Leave a comment</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </article>
+            </div>
+    </div>
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+            {% if page_num %}
+                {% if posts.page == page_num %}
+                    <a class="btn btn-info mb-4" href="{{ url_for('posts.post', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <a class="btn btn-outline-info mb-4" href="{{ url_for('posts.post', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+{% endblock %}
